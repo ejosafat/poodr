@@ -46,7 +46,11 @@ Gear.prototype = {
     },
 
     get gearInches () {
-        return this.ratio * (this.rim + (this.tire * 2));
+        return this.ratio * this.diameter;
+    },
+
+    get diameter () {
+        return this.rim + (this.tire * 2);
     }
 }
 

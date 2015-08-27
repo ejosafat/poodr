@@ -17,9 +17,11 @@ RevealingReferences.prototype = {
 
     get diameters () {
         // 0 is rim, 1 is tire
-        return this.wheels.map(function (wheel) {
-            return wheel.rim + (wheel.tire * 2);
-        });
+        return this.wheels.map(this.diameter);
+    },
+
+    diameter: function (wheel) {
+        return wheel.rim + (wheel.tire * 2);
     }
 };
 
