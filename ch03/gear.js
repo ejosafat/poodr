@@ -1,10 +1,9 @@
 'use strict';
 
-function Gear (chainring, cog, rim, tire) {
-    this.chainring = chainring;
-    this.cog = cog;
-    this.rim = rim;
-    this.tire = tire;
+function Gear (args) {
+    this.chainring = args.chainring;
+    this.cog = args.cog;
+    this.wheel = args.wheel;
 }
 
 Gear.prototype = {
@@ -26,28 +25,11 @@ Gear.prototype = {
     },
 
     get wheel () {
-        return this._wheel || this._setWheel(this.rim, this.tire) ;
-    },
-
-    _setWheel: function (rim, tire) {
-        this._wheel = new Wheel(this.rim, this.tire);
         return this._wheel;
     },
 
-    get rim () {
-        return this._rim;
-    },
-
-    set rim (value) {
-        this._rim = value;
-    },
-
-    get tire () {
-        return this._tire;
-    },
-
-    set tire (value) {
-        this._tire = value;
+    set wheel (value) {
+        this._wheel = wheel;
     },
 
     get ratio () {
@@ -91,4 +73,14 @@ Wheel.prototype = {
     }
 };
 
-console.log((new Gear(52, 11, 26, 1.5)).gearInches);
+var wheel = new Wheel(26, 1.5);
+console.log(wheel.circumference);
+console.log((new Gear({
+    chainring: 52,
+    cog: 11,
+    wheel: wheel
+})).gearInches);
+console.log((new Gear({
+    chainring: 52,
+    cog: 11
+})).ratio);
