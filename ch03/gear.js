@@ -1,8 +1,11 @@
 'use strict';
 
 function Gear (args) {
-    this.chainring = args.chainring;
-    this.cog = args.cog;
+    this.chainring = args.chainring || 40;
+    this.cog = args.cog || 18;
+    // Problem: when arguments are booleans
+    // We'll never accept false as an argument in this case
+    // this.something = args.something || true
     this.wheel = args.wheel;
 }
 
