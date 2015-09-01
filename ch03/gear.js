@@ -3,7 +3,8 @@
 function Gear (chainring, cog, rim, tire) {
     this.chainring = chainring;
     this.cog = cog;
-    this.wheel = new Wheel(rim, tire);
+    this.rim = rim;
+    this.tire = tire;
 }
 
 Gear.prototype = {
@@ -25,11 +26,28 @@ Gear.prototype = {
     },
 
     get wheel () {
+        return this._wheel || this._setWheel(this.rim, this.tire) ;
+    },
+
+    _setWheel: function (rim, tire) {
+        this._wheel = new Wheel(this.rim, this.tire);
         return this._wheel;
     },
 
-    set wheel (value) {
-        this._wheel = value;
+    get rim () {
+        return this._rim;
+    },
+
+    set rim (value) {
+        this._rim = value;
+    },
+
+    get tire () {
+        return this._tire;
+    },
+
+    set tire (value) {
+        this._tire = value;
     },
 
     get ratio () {
