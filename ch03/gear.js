@@ -1,25 +1,12 @@
 'use strict';
 
-function Gear (args) {
-    if (args === void 0) args = {};
-    args = this._mergeDefaults(args, this.defaults);
-    this.chainring = args.chainring;
-    this.cog = args.cog;
-    // Problem: when arguments are booleans
-    // We'll never accept false as an argument in this case
-    // this.something = args.something || true
-    this.wheel = args.wheel;
+function Gear (chainring, cog) {
+    this.chainring = chainring;
+    this.cog = cog;
 }
 
 Gear.prototype = {
     constructor: Gear,
-
-    get defaults () {
-        return {
-            chainring: 40,
-            cog: 18
-        }
-    },
 
     get chainring () {
         return this._chainring;
@@ -37,35 +24,19 @@ Gear.prototype = {
         this._cog = value;
     },
 
-    get wheel () {
-        return this._wheel;
-    },
-
-    set wheel (value) {
-        this._wheel = wheel;
-    },
-
     get ratio () {
         return this.chainring / this.cog;
     },
 
-    get gearInches () {
-        return this.ratio * this.wheel.diameter;
-    },
-
-    _mergeDefaults: function (args, defaults) {
-        Object.keys(defaults).forEach(function (key) {
-            if (args[key] === void 0) {
-                args[key] = defaults[key];
-            }
-        });
-        return args;
+    gearInches: function (diameter) {
+        return this.ratio * diameter;
     }
 }
 
-function Wheel (rim, tire) {
+function Wheel (rim, tire, chainring, cog) {
     this.rim = rim;
     this.tire = tire;
+    this.gear = new Gear(chainring, cog);
 }
 
 Wheel.prototype = {
@@ -86,8 +57,20 @@ Wheel.prototype = {
         this._tire = value;
     },
 
+    get gear () {
+        return this._gear;
+    },
+
+    set gear (value) {
+        this._gear = value;
+    },
+
     get diameter () {
         return this.rim + (this.tire * 2);
+    },
+
+    get gearInches () {
+        return this.gear.gearInches(this.diameter);
     },
 
     get circumference () {
@@ -95,15 +78,5 @@ Wheel.prototype = {
     }
 };
 
-var wheel = new Wheel(26, 1.5);
-console.log(wheel.circumference);
-console.log((new Gear({
-    chainring: 52,
-    cog: 11,
-    wheel: wheel
-})).gearInches);
-console.log((new Gear({
-    chainring: 52,
-    cog: 11
-})).ratio);
-console.log((new Gear()).ratio);
+var wheel = new Wheel(26, 1.5, 52, 11);
+console.log(wheel.gearInches);
