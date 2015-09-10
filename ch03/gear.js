@@ -1,8 +1,10 @@
 'use strict';
 
 function Gear (args) {
-    this.chainring = args.chainring || 40;
-    this.cog = args.cog || 18;
+    if (args === void 0) args = {};
+    args = this._mergeDefaults(args, this.defaults);
+    this.chainring = args.chainring;
+    this.cog = args.cog;
     // Problem: when arguments are booleans
     // We'll never accept false as an argument in this case
     // this.something = args.something || true
@@ -11,6 +13,14 @@ function Gear (args) {
 
 Gear.prototype = {
     constructor: Gear,
+
+    get defaults () {
+        return {
+            chainring: 40,
+            cog: 18
+        }
+    },
+
     get chainring () {
         return this._chainring;
     },
@@ -41,6 +51,15 @@ Gear.prototype = {
 
     get gearInches () {
         return this.ratio * this.wheel.diameter;
+    },
+
+    _mergeDefaults: function (args, defaults) {
+        Object.keys(defaults).forEach(function (key) {
+            if (args[key] === void 0) {
+                args[key] = defaults[key];
+            }
+        });
+        return args;
     }
 }
 
@@ -87,3 +106,4 @@ console.log((new Gear({
     chainring: 52,
     cog: 11
 })).ratio);
+console.log((new Gear()).ratio);
