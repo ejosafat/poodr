@@ -20,19 +20,8 @@ Trip.prototype = {
 
     prepare: function (preparers) {
         preparers.forEach(function (preparer) {
-            switch (preparer.prototype.constructor) {
-                case Mechanic:
-                    preparer.prepareBicycles(this.bicycles);
-                    break;
-                case TripCoordinator:
-                    preparer.buyFood(this.customers);
-                    break;
-                case Driver:
-                    preparer.gasUp(this.vehicle);
-                    preparer.fillWaterTank(this.vehicle);
-                    break;
-            }
-        });
+            preparer.prepare_trip(this);
+        }.bind(this));
     }
 
     // ...
@@ -43,6 +32,10 @@ function Mechanic () {
 
 Mechanic.prototype = {
     constructor: Mechanic,
+
+    prepare_trip: function (trip) {
+        trip.bicycles.forEach(this.prepareBicycles.bind(this));
+    },
 
     prepareBicycles: function (bicycles) {
         bicycles.forEach(this.prepareBicycle.bind(this));
@@ -59,6 +52,10 @@ function TripCoordinator () {
 TripCoordinator.prototype = {
     constructor: TripCoordinator,
 
+    prepare_trip: function (trip) {
+        this.buyFood(trip.customers);
+    },
+
     buyFood: function (customers) {
         //...
     }
@@ -69,6 +66,12 @@ function Driver () {
 
 Driver.prototype = {
     constructor: Driver,
+
+    prepare_trip: function (trip) {
+        var vehicle = trip.vehicle;
+        this.gasUp(vehicle);
+        this.fillWaterTank(vehicle);
+    },
 
     gasUp: function (vehicle) {
         //..
