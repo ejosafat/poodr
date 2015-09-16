@@ -1,8 +1,11 @@
 'use strict';
 
 function Bicycle (args) {
+    this._style = args.style;
     this._size = args.size;
     this._tapeColor = args.tapeColor;
+    this._frontShock = args.frontShock;
+    this._rearShock = args.rearShock;
 }
 
 Bicycle.prototype = {
@@ -16,21 +19,42 @@ Bicycle.prototype = {
         return this._tapeColor;
     },
 
+    get style () {
+        return this._style;
+    },
+
+    get frontShock () {
+        return this._frontShock;
+    },
+
+    get rearShock () {
+        return this._rearShock;
+    },
+
     get spares () {
-        return {
-            chain: '10-speed',
-            tireSize: '23',
-            tapeColor: this.tapeColor
-        };
+        if (this.style === 'road') {
+            return {
+                chain: '10-speed',
+                tireSize: '23',
+                tapeColor: this.tapeColor
+            };
+        } else {
+            return {
+                chain: '10-speed',
+                tireSize: '2.1',
+                rearShock: this.rearShock
+            };
+        }
     }
 
     //...
 }
 
 var bike = new Bicycle({
-    size: 'M',
-    tapeColor: 'red'
+    style: 'mountain',
+    size: 'S',
+    frontShock: 'Manitou',
+    rearShock: 'Fox'
 });
 
-console.log(bike.size);
 console.log(bike.spares);
