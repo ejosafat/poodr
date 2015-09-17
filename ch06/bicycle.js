@@ -1,11 +1,8 @@
 'use strict';
 
 function Bicycle (args) {
-    this._style = args.style;
     this._size = args.size;
     this._tapeColor = args.tapeColor;
-    this._frontShock = args.frontShock;
-    this._rearShock = args.rearShock;
 }
 
 Bicycle.prototype = {
@@ -19,42 +16,49 @@ Bicycle.prototype = {
         return this._tapeColor;
     },
 
-    get style () {
-        return this._style;
-    },
-
-    get frontShock () {
-        return this._frontShock;
-    },
-
-    get rearShock () {
-        return this._rearShock;
-    },
-
     get spares () {
-        if (this.style === 'road') {
-            return {
-                chain: '10-speed',
-                tireSize: '23',
-                tapeColor: this.tapeColor
-            };
-        } else {
-            return {
-                chain: '10-speed',
-                tireSize: '2.1',
-                rearShock: this.rearShock
-            };
-        }
+        return {
+            chain: '10-speed',
+            tireSize: '23',
+            tapeColor: this.tapeColor
+        };
     }
 
     //...
 }
 
-var bike = new Bicycle({
-    style: 'mountain',
+function MountainBike (args) {
+    this._frontShock = args.frontShock;
+    this._rearShock = args.rearShock;
+    Bicycle.call(this, args);
+}
+
+MountainBike.prototype = Object.create(Bicycle.prototype);
+MountainBike.prototype.constructor = MountainBike;
+Object.defineProperty(MountainBike.prototype, 'frontShock', {
+    get: function () {
+        return this._frontShock;
+    }
+});
+Object.defineProperty(MountainBike.prototype, 'rearShock', {
+    get: function () {
+        return this._rearShock;
+    }
+});
+Object.defineProperty(MountainBike.prototype, 'spares', {
+    get: function () {
+        var parts = Bicycle.prototype.spares;
+        parts.rearShock = this.rearShock;
+        parts.frontShock = this.frontShock;
+        return parts;
+    }
+});
+
+var mountainBike = new MountainBike({
     size: 'S',
     frontShock: 'Manitou',
     rearShock: 'Fox'
 });
 
-console.log(bike.spares);
+console.log(mountainBike.size);
+console.log(mountainBike.spares);
