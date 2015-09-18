@@ -3,6 +3,8 @@
 function Bicycle (args) {
     args = args || {};
     this._size = args.size;
+    this._chain = args.chain || this.defaultChain;
+    this._tireSize = args.tireSize || this.defaultTireSize;
 }
 
 Bicycle.prototype = {
@@ -10,6 +12,18 @@ Bicycle.prototype = {
 
     get size () {
         return this._size;
+    },
+
+    get chain () {
+        return this._chain;
+    },
+
+    get tireSize () {
+        return this._tireSize;
+    },
+
+    get defaultChain () {
+        return '10-speed';
     }
 }
 
@@ -24,6 +38,12 @@ RoadBike.prototype.constructor = RoadBike;
 Object.defineProperty(RoadBike.prototype, 'tapeColor', {
     get: function () {
         return this._tapeColor;
+    }
+});
+
+Object.defineProperty(RoadBike.prototype, 'defaultTireSize', {
+    get: function () {
+        return '23';
     }
 });
 
@@ -58,6 +78,12 @@ Object.defineProperty(MountainBike.prototype, 'rearShock', {
     }
 });
 
+Object.defineProperty(MountainBike.prototype, 'defaultTireSize', {
+    get: function () {
+        return '2.1';
+    }
+});
+
 Object.defineProperty(MountainBike.prototype, 'spares', {
     get: function () {
         var parts = Bicycle.prototype.spares || {};
@@ -71,11 +97,13 @@ var roadBike = new RoadBike({
     size: 'M',
     tapeColor: 'red'
 });
-console.log(roadBike.size);
+console.log(roadBike.tireSize);
+console.log(roadBike.chain);
 
 var mountainBike = new MountainBike({
     size: 'S',
     frontShock: 'Manitou',
     rearShock: 'Fox'
 });
-console.log(mountainBike.size);
+console.log(mountainBike.tireSize);
+console.log(mountainBike.chain);
