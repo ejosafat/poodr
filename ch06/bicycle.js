@@ -1,25 +1,25 @@
 'use strict';
 
 function Bicycle (args) {
+    args = args || {};
+    this._size = args.size;
 }
 
 Bicycle.prototype = {
     constructor: Bicycle,
+
+    get size () {
+        return this._size;
+    }
 }
 
 function RoadBike (args) {
-    this._size = args.size;
     this._tapeColor = args.tapeColor;
+    Bicycle.call(this, args);
 }
 
 RoadBike.prototype = Object.create(Bicycle.prototype);
 RoadBike.prototype.constructor = RoadBike;
-
-Object.defineProperty(RoadBike.prototype, 'size', {
-    get: function () {
-        return this._size;
-    }
-});
 
 Object.defineProperty(RoadBike.prototype, 'tapeColor', {
     get: function () {
