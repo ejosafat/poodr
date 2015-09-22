@@ -28,6 +28,13 @@ Bicycle.prototype = {
 
     get defaultTireSize () {
         throw 'defaultTireSize should be implemented';
+    },
+
+    spares: function () {
+        return {
+            tireSize: this.tireSize,
+            chain: this.chain
+        };
     }
 }
 
@@ -51,15 +58,11 @@ Object.defineProperty(RoadBike.prototype, 'defaultTireSize', {
     }
 });
 
-Object.defineProperty(RoadBike.prototype, 'spares', {
-    get: function () {
-        return {
-            chain: '10-speed',
-            tireSize: '23',
-            tapeColor: this.tapeColor
-        };
-    }
-});
+RoadBike.prototype.spares = function () {
+    var parts = Bicycle.prototype.spares.call(this) || {};
+    parts.tapeColor = this.tapeColor;
+    return parts;
+};
 
 function MountainBike (args) {
     this._frontShock = args.frontShock;
@@ -88,25 +91,23 @@ Object.defineProperty(MountainBike.prototype, 'defaultTireSize', {
     }
 });
 
-Object.defineProperty(MountainBike.prototype, 'spares', {
-    get: function () {
-        var parts = Bicycle.prototype.spares || {};
-        parts.rearShock = this.rearShock;
-        parts.frontShock = this.frontShock;
-        return parts;
-    }
+MountainBike.prototype.spares = function () {
+    var parts = Bicycle.prototype.spares.call(this) || {};
+    console.log('mountain parts: ', parts);
+    parts.rearShock = this.rearShock;
+    parts.frontShock = this.frontShock;
+    return parts;
+};
+
+var roadBike = new RoadBike({
+        size: 'M',
+        tapeColor: 'red'
 });
+console.log(roadBike.spares());
 
-function RecumbentBike (args) {
-    Bicycle.call(this, args);
-}
-
-RecumbentBike.prototype = Object.create(Bicycle.prototype);
-RecumbentBike.prototype.constructor = RecumbentBike;
-Object.defineProperty(RecumbentBike.prototype, 'defaultChain', {
-    get: function () {
-        return '9-speed';
-    }
+var mountainBike = new MountainBike({
+        size: 'S',
+        frontShock: 'Manitou',
+        rearShock: 'Fox'
 });
-
-var recumbentBike = new RecumbentBike();
+console.log(mountainBike.spares());
