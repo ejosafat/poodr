@@ -24,6 +24,10 @@ Bicycle.prototype = {
 
     get defaultChain () {
         return '10-speed';
+    },
+
+    get defaultTireSize () {
+        throw 'defaultTireSize should be implemented';
     }
 }
 
@@ -93,17 +97,16 @@ Object.defineProperty(MountainBike.prototype, 'spares', {
     }
 });
 
-var roadBike = new RoadBike({
-    size: 'M',
-    tapeColor: 'red'
-});
-console.log(roadBike.tireSize);
-console.log(roadBike.chain);
+function RecumbentBike (args) {
+    Bicycle.call(this, args);
+}
 
-var mountainBike = new MountainBike({
-    size: 'S',
-    frontShock: 'Manitou',
-    rearShock: 'Fox'
+RecumbentBike.prototype = Object.create(Bicycle.prototype);
+RecumbentBike.prototype.constructor = RecumbentBike;
+Object.defineProperty(RecumbentBike.prototype, 'defaultChain', {
+    get: function () {
+        return '9-speed';
+    }
 });
-console.log(mountainBike.tireSize);
-console.log(mountainBike.chain);
+
+var recumbentBike = new RecumbentBike();
