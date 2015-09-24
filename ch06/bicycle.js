@@ -93,7 +93,6 @@ Object.defineProperty(MountainBike.prototype, 'defaultTireSize', {
 
 MountainBike.prototype.spares = function () {
     var parts = Bicycle.prototype.spares.call(this) || {};
-    console.log('mountain parts: ', parts);
     parts.rearShock = this.rearShock;
     parts.frontShock = this.frontShock;
     return parts;
@@ -111,3 +110,37 @@ var mountainBike = new MountainBike({
         rearShock: 'Fox'
 });
 console.log(mountainBike.spares());
+
+function RecumbentBike (args) {
+    this._flag = args.flag;
+}
+
+RecumbentBike.prototype = Object.create(Bicycle.prototype);
+RecumbentBike.prototype.constructor = RecumbentBike;
+
+Object.defineProperty(RecumbentBike.prototype, 'flag', {
+    get: function () {
+        return this._flag;
+    }
+});
+Object.defineProperty(RecumbentBike.prototype, 'defaultChain', {
+    get: function () {
+        return '9-speed';
+    }
+});
+Object.defineProperty(RecumbentBike.prototype, 'defaultTireSize', {
+    get: function () {
+        return '28';
+    }
+});
+RecumbentBike.prototype.spares = function () {
+    var parts = Bicycle.prototype.spares.call(this) || {};
+    parts.flag = this.flag;
+    return parts;
+};
+
+var bent = new RecumbentBike({
+    flag: 'tall and orange'
+});
+
+console.log(bent.spares());
