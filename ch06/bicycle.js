@@ -5,6 +5,7 @@ function Bicycle (args) {
     this._size = args.size;
     this._chain = args.chain || this.defaultChain;
     this._tireSize = args.tireSize || this.defaultTireSize;
+    this.postInitialize(args);
 }
 
 Bicycle.prototype = {
@@ -31,20 +32,37 @@ Bicycle.prototype = {
     },
 
     spares: function () {
-        return {
+        return this._merge({
             tireSize: this.tireSize,
             chain: this.chain
-        };
+        }, this.localSpares());
+    },
+
+    postInitialize: function (args) {
+        console.log('Bicycle: postInitialize');
+        return null;
+    },
+
+    localSpares: function () {
+        console.log('Bicycle: localSpares');
+        return {};
+    },
+
+    _merge: function (dest, src) {
+        Object.keys(src).forEach(function (key) {
+            dest[key] = src[key];
+        });
+        return dest;
     }
 }
 
-function RoadBike (args) {
-    this._tapeColor = args.tapeColor;
-    Bicycle.call(this, args);
-}
-
+// This is the only way of creating a RoadBike 'child' that uses Bicycle code as a constructor
+// without calling it explicitly from a RoadBike function with call or apply.
+var RoadBike = new Function ("args", extractFunctionBody(Bicycle.toString()));
 RoadBike.prototype = Object.create(Bicycle.prototype);
-RoadBike.prototype.constructor = RoadBike;
+RoadBike.prototype.postInitialize = function (args) {
+    this._tapeColor = args.tapeColor;
+};
 
 Object.defineProperty(RoadBike.prototype, 'tapeColor', {
     get: function () {
@@ -58,20 +76,20 @@ Object.defineProperty(RoadBike.prototype, 'defaultTireSize', {
     }
 });
 
-RoadBike.prototype.spares = function () {
-    var parts = Bicycle.prototype.spares.call(this) || {};
-    parts.tapeColor = this.tapeColor;
-    return parts;
+RoadBike.prototype.localSpares = function () {
+    return {
+        tapeColor: this.tapeColor
+    };
 };
 
-function MountainBike (args) {
+// This is the only way of creating a MountainBike 'child' that uses Bicycle code as a constructor
+// without calling it explicitly from a RoadBike function with call or apply.
+var MountainBike = new Function ("args", extractFunctionBody(Bicycle.toString()));
+MountainBike.prototype = Object.create(Bicycle.prototype);
+MountainBike.prototype.postInitialize = function (args) {
     this._frontShock = args.frontShock;
     this._rearShock = args.rearShock;
-    Bicycle.call(this, args);
-}
-
-MountainBike.prototype = Object.create(Bicycle.prototype);
-MountainBike.prototype.constructor = MountainBike;
+};
 
 Object.defineProperty(MountainBike.prototype, 'frontShock', {
     get: function () {
@@ -91,11 +109,11 @@ Object.defineProperty(MountainBike.prototype, 'defaultTireSize', {
     }
 });
 
-MountainBike.prototype.spares = function () {
-    var parts = Bicycle.prototype.spares.call(this) || {};
-    parts.rearShock = this.rearShock;
-    parts.frontShock = this.frontShock;
-    return parts;
+MountainBike.prototype.localSpares = function () {
+    return {
+        rearShock:  this.rearShock,
+        frontShock: this.frontShock
+    };
 };
 
 var roadBike = new RoadBike({
@@ -111,36 +129,9 @@ var mountainBike = new MountainBike({
 });
 console.log(mountainBike.spares());
 
-function RecumbentBike (args) {
-    this._flag = args.flag;
+function extractFunctionBody (funStr) {
+    var source = funStr.split('\n');
+    source.shift();
+    source.pop();
+    return source.join('\n');
 }
-
-RecumbentBike.prototype = Object.create(Bicycle.prototype);
-RecumbentBike.prototype.constructor = RecumbentBike;
-
-Object.defineProperty(RecumbentBike.prototype, 'flag', {
-    get: function () {
-        return this._flag;
-    }
-});
-Object.defineProperty(RecumbentBike.prototype, 'defaultChain', {
-    get: function () {
-        return '9-speed';
-    }
-});
-Object.defineProperty(RecumbentBike.prototype, 'defaultTireSize', {
-    get: function () {
-        return '28';
-    }
-});
-RecumbentBike.prototype.spares = function () {
-    var parts = Bicycle.prototype.spares.call(this) || {};
-    parts.flag = this.flag;
-    return parts;
-};
-
-var bent = new RecumbentBike({
-    flag: 'tall and orange'
-});
-
-console.log(bent.spares());
