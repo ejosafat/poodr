@@ -39,12 +39,10 @@ Bicycle.prototype = {
     },
 
     postInitialize: function (args) {
-        console.log('Bicycle: postInitialize');
         return null;
     },
 
     localSpares: function () {
-        console.log('Bicycle: localSpares');
         return {};
     },
 
