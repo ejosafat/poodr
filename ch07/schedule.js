@@ -1,7 +1,5 @@
 'use strict';
 
-var moment = require('moment');
-
 function Schedule () {};
 
 Schedule.prototype.isScheduled = function (schedulable, startDate, endDate) {
@@ -10,33 +8,23 @@ Schedule.prototype.isScheduled = function (schedulable, startDate, endDate) {
     return false;
 };
 
-function Bicycle (args) {
-    args = args || {};
-    this._schedule = args.schedule|| new Schedule();
-}
-
-Bicycle.prototype = {
-    constructor: Bicycle,
-
-    get schedule () {
-        return this._schedule;
-    },
-
-    get leadDays () {
-        return 1;
+var scheduleModule = {
+    '@merge': 'their',
+    schedule: function () {
+        return this._schedule || (this._schedule = new Schedule());
     },
 
     isSchedulable: function (startDate, endDate) {
-        return ! this.isScheduled(startDate.subtract(this.leadDays, 'days'), endDate);
+        return ! this.isScheduled(startDate.subtract(this.leadDays(), 'days'), endDate);
     },
 
     isScheduled: function (startDate, endDate) {
-        return this.schedule.isScheduled(this, startDate, endDate);
+        return this.schedule().isScheduled(this, startDate, endDate);
+    },
+
+    leadDays: function () {
+        return 0;
     }
 }
 
-var starting = moment('2015-09-04');
-var ending = moment('2015-09-10');
-
-var b = new Bicycle();
-console.log(b.isSchedulable(starting, ending));
+module.exports = scheduleModule;
