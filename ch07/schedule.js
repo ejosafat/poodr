@@ -9,7 +9,6 @@ Schedule.prototype.isScheduled = function (schedulable, startDate, endDate) {
 };
 
 var scheduleModule = {
-    '@merge': 'their',
     schedule: function () {
         return this._schedule || (this._schedule = new Schedule());
     },
