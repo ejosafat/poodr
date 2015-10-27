@@ -1,45 +1,30 @@
 'use strict';
 
 var Bicycle = require('./Bicycle');
-var Parts = require('./Parts');
-var Part = require('./Part');
+var partsFactory = require('./partsFactory');
 
-var chain = new Part({
-    name: 'chain',
-    description: '10-speed'
-});
-var roadTire = new Part({
-    name: 'tireSize',
-    description: '23'
-});
-var tape = new Part({
-    name: 'tapeColor',
-    description: 'red'
-});
-var mountainTire = new Part({
-    name: 'tireSize',
-    description: '2.1'
-});
-var rearShock = new Part({
-    name: 'rearShock',
-    description: 'Fox'
-});
-var frontShock = new Part({
-    name: 'frontShock',
-    description: 'Manitou',
-    needsSpare: false
-});
+var roadConfig = [
+    ['chain', '10-speed'],
+    ['tireSize', '23'],
+    ['tapeColor', 'red']
+];
+var mountainConfig = [
+    ['chain', '10-speed'],
+    ['tireSize', '2.1'],
+    ['rearShock', 'Fox'],
+    ['frontShock', 'Manitou', false]
+];
 
 var roadBike = new Bicycle({
     size: 'L',
-    parts: new Parts([chain, roadTire, tape])
+    parts: new partsFactory.build(roadConfig)
 });
 console.log(roadBike.size);
 console.log(roadBike.spares());
 
 var mountainBike = new Bicycle({
         size: 'L',
-        parts: new Parts([chain, mountainTire, frontShock, rearShock])
+        parts: new partsFactory.build(mountainConfig)
 });
 console.log(mountainBike.size);
 console.log(mountainBike.spares());
