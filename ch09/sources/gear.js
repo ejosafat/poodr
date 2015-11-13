@@ -4,10 +4,33 @@ function Gear (args) {
     this.chainring = args.chainring;
     this.cog = args.cog;
     this.wheel = args.wheel;
+    this.observer = args.observer;
 }
 
 Gear.prototype = {
     constructor: Gear,
+
+    setCog: function (newCog) {
+        this.cog = newCog;
+        this.changed();
+    },
+
+    setChainring: function (newChainring) {
+        this.chainring = newChainring;
+        this.changed();
+    },
+
+    changed: function () {
+        this.observer.changed(this.chainring, this.cog);
+    },
+
+    get observer () {
+        return this._observer;
+    },
+
+    set observer (value) {
+        this._observer = value;
+    },
     get chainring () {
         return this._chainring;
     },
@@ -30,6 +53,14 @@ Gear.prototype = {
 
     set wheel (value) {
         this._wheel = value;
+    },
+
+    get observer () {
+        return this._observer;
+    },
+
+    set observer (value) {
+        this._observer = value;
     },
 
     get ratio () {
