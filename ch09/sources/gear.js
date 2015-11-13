@@ -1,12 +1,9 @@
 'use strict';
 
-var Wheel = require('./wheel');
-
 function Gear (args) {
     this.chainring = args.chainring;
     this.cog = args.cog;
-    this.rim = args.rim;
-    this.tire = args.tire;
+    this.wheel = args.wheel;
 }
 
 Gear.prototype = {
@@ -27,20 +24,12 @@ Gear.prototype = {
         this._cog = value;
     },
 
-    get rim () {
-        return this._rim;
+    get wheel () {
+        return this._wheel;
     },
 
-    set rim (value) {
-        this._rim = value;
-    },
-
-    get tire () {
-        return this._tire;
-    },
-
-    set tire (value) {
-        this._tire = value;
+    set wheel (value) {
+        this._wheel = value;
     },
 
     get ratio () {
@@ -48,7 +37,7 @@ Gear.prototype = {
     },
 
     get gearInches () {
-        return this.ratio * (new Wheel(this.rim, this.tire)).diameter;
+        return this.ratio * this.wheel.diameter;
     }
 }
 
